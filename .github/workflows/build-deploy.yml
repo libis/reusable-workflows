@@ -15,6 +15,9 @@
 
 name: Build and Deploy
 
+on:
+  workflow_call:
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
