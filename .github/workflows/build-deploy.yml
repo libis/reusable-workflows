@@ -72,7 +72,12 @@ jobs:
     steps:
     - 
       name: Microsoft Teams Notification
-      uses: skitionek/notify-microsoft-teams@master
-      if: always()
+      uses: microsoft/teams-action@v1
       with:
-        webhook_url: ${{ secrets.msteams_webhook }}
+        message-type: 'simple'
+        title: 'Build Notification'
+        summary: 'The build has completed.'
+        text: 'Status: ${{ job.status }}'
+        theme-color: '0076D7'
+      env:
+        TEAMS_WEBHOOK_URL: ${{ secrets.msteams_webhook }}
