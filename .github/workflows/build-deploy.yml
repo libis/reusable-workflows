@@ -22,8 +22,6 @@ on:
         required: true
       password:
         required: true
-  workflow_dispatch:
-
 
 jobs:
   build-deploy:
