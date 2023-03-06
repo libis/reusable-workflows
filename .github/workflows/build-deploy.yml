@@ -22,6 +22,8 @@ on:
         required: true
       password:
         required: true
+      msteams_webhook:
+        required: true
 
 jobs:
   build-deploy:
@@ -73,4 +75,4 @@ jobs:
       uses: skitionek/notify-microsoft-teams@master
       if: always()
       with:
-        webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
+        webhook_url: ${{ secrets.msteams_webhook }}
