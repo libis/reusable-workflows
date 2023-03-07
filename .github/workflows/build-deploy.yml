@@ -70,14 +70,11 @@ jobs:
   send-notification:
     runs-on: ubuntu-latest
     steps:
-    - 
-      name: Microsoft Teams Notification
-      uses: microsoft/teams-action@v1
+    -          
+      name: MSTeams Notification
+      uses: chrisdleech-pol/github-action-notify-teams@1.0.0
       with:
-        message-type: 'simple'
-        title: 'Build Notification'
-        summary: 'The build has completed.'
-        text: 'Status: ${{ job.status }}'
-        theme-color: '0076D7'
-      env:
-        TEAMS_WEBHOOK_URL: ${{ secrets.msteams_webhook }}
+        TEAMS_URI: ${{ secrets.msteams_webhook }}
+        TEAMS_MSG_TITLE: "Build ${{ job.status }}!"
+        TEAMS_MSG_SUMMARY: "The docker build and deply flow for ${{ github.repository }} was a ${{ job.status }}!"
+        TEAMS_MSG_TYPE: ${{ job.status }}
