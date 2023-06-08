@@ -29,11 +29,11 @@ jobs:
     name: Checks URLs from JSON file
     steps:
       - name: Log the action path
-        run: echo "The file dir is ${{ inputs.filedir}}"
+        run: pwd
       - name: Checkout
         uses: actions/checkout@v2
       - name: Check URLs
         uses: bythepixel/urlchecker@v0.15.0
         with:
           hostname: ${{ matrix.hostnames }}
-          filename: ${{ inputs.filedir}}/${{ matrix.hostnames }}.json
+          filename: ./test-files/${{ matrix.hostnames }}.json
