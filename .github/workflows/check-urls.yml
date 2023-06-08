@@ -1,5 +1,5 @@
-# This reusable workflow accepts a list of domains to test along with files containing what paths to use for each domain.
-# This function will look for a file with the same name as the domain with the .json extension. 
+# This reusable workflow accepts a list of hostnames to test along with files containing what paths to use for each hostname.
+# This function will look for a file with the same name as the hostname with the .json extension. 
 # For example, if you are testing site1.com you need the file ./testfiles/site1.com.json, the format for this file
 # can be found here https://github.com/marketplace/actions/check-urls
 name: Check URLs
@@ -10,10 +10,10 @@ on:
       webhook:
         required: true
         type: string
-      domains:  # Should be json like array [ site1.com, site2.com ]
+      hostnames:  # Should be json like array [ site1.com, site2.com ]
         required: true
-        type: 'string'
-      filedir :
+        type: string
+      filedir : # Where to look for the .sjon files coresspoding to each hostname
         required: true
         type: string
         
@@ -25,15 +25,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        domain: ${{ fromJson(inputs.domains) }}
+        hostname: ${{ fromJson(inputs.hostnames) }}
     name: Checks URLs from JSON file
     steps:
       - name: Log the action path
-        run: echo "The github.action_path is  ${{ github.action_path }}" && echo "The ACTION path is  $GITHUB_ACTION_PATH"
+        run: echo "The file dir is ${{ input.filedir}}"
       - name: Checkout
         uses: actions/checkout@v2
       - name: Check URLs
         uses: bythepixel/urlchecker@v0.15.0
         with:
-          hostname: ${{ matrix.domain }}
-          filename: ${{ input.filedir}}/${{ matrix.domain }}.json
+          hostname: ${{ matrix.hostnames }}
+          filename: ${{ inputs.filedir}}/${{ matrix.hostnames }}.json
