@@ -13,7 +13,10 @@ on:
       domains:  # Should be json like array [ site1.com, site2.com ]
         required: true
         type: 'string'
-
+      filedir :
+        required: true
+        type: string
+        
 env:
   SLACK_WEBHOOK: ${{ inputs.webhook }}
 
@@ -33,4 +36,4 @@ jobs:
         uses: bythepixel/urlchecker@v0.15.0
         with:
           hostname: ${{ matrix.domain }}
-          filename: ${{ github.action_path }}/test-files/${{ matrix.domain }}.json
+          filename: ${{ input.filedir}}/${{ matrix.domain }}.json
