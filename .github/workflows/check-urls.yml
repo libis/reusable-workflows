@@ -28,9 +28,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Log paths
-        run: pwd && ls -la
+        run: pwd && ls -la ./.github && ls -la ./.github/workflows && ls -la ./.github/workflows/test-files
       - name: Check URLs
         uses: bythepixel/urlchecker@v0.15.0
         with:
           hostname: ${{ matrix.hostname }}
-          filename: ./github/workflows/test-files/${{ matrix.hostname }}.json # Had to hardcode this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
+          filename: ./.github/workflows/test-files/${{ matrix.hostname }}.json # Had to hardcode this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
