@@ -25,8 +25,8 @@ jobs:
         hostname: ${{ fromJson(inputs.hostnames) }}
     name: Checks URLs from JSON file
     steps:
-      - name: Log the action path
-        run: pwd
+      - name: Log paths
+        run: pwd && ls -la
       - name: Checkout
         uses: actions/checkout@v2
       - name: Check URLs
