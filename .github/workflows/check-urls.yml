@@ -1,0 +1,34 @@
+# This reusable workflow accepts a list of domains to test along with files containing what paths to use for each domain.
+# This function will look for a file with the same name as the domain with the .json extension. 
+# For example, if you are testing site1.com you need the file ./testfiles/site1.com.json, the format for this file
+# can be found here https://github.com/marketplace/actions/check-urls
+name: Check URLs
+
+on:
+  workflow_call:
+    inputs:
+      webhook:
+        required: true
+        type: string
+      domains:  # Should be json like array [ site1.com, site2.com ]
+        required: true
+        type: 'string'
+
+env:
+  SLACK_WEBHOOK: ${{ inputs.webhook }}
+
+jobs:
+  check-urls:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        domain: ${{ fromJson(inputs.domains) }}
+    name: Checks URLs from JSON file
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Check URLs
+        uses: bythepixel/urlchecker@v0.2.0
+        with:
+          hostname: ${{ matrix.domain }}
+          filename: ./${{ matrix.domain }}.json
