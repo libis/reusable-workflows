@@ -25,10 +25,10 @@ jobs:
         hostname: ${{ fromJson(inputs.hostnames) }}
     name: Checks URLs from JSON file
     steps:
-      - name: Log paths
-        run: pwd && ls -la
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Log paths
+        run: pwd && ls -la
       - name: Check URLs
         uses: bythepixel/urlchecker@v0.15.0
         with:
