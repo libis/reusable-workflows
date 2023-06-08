@@ -13,9 +13,6 @@ on:
       hostnames:  # Should be json like array [ site1.com, site2.com ]
         required: true
         type: string
-      filedir : # Where to look for the .sjon files coresspoding to each hostname
-        required: true
-        type: string
         
 env:
   SLACK_WEBHOOK: ${{ inputs.webhook }}
@@ -36,4 +33,4 @@ jobs:
         uses: bythepixel/urlchecker@v0.15.0
         with:
           hostname: ${{ matrix.hostnames }}
-          filename: ./test-files/${{ matrix.hostnames }}.json
+          filename: .github/workflows/test-files/${{ matrix.hostname }}.json # Had to hardcode this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
