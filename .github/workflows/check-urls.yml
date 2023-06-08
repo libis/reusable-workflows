@@ -25,10 +25,12 @@ jobs:
         domain: ${{ fromJson(inputs.domains) }}
     name: Checks URLs from JSON file
     steps:
+      - name: Log the workspace path
+        run: echo "The workspace path is ${{ github.workspace }}"
       - name: Checkout
         uses: actions/checkout@v2
       - name: Check URLs
         uses: bythepixel/urlchecker@v0.15.0
         with:
           hostname: ${{ matrix.domain }}
-          filename: .${{ github.action_path }}/test-files/${{ matrix.domain }}.json
+          filename: ${{ github.action_path }}/test-files/${{ matrix.domain }}.json
