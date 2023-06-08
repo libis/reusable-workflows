@@ -28,7 +28,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Check URLs
-        uses: bythepixel/urlchecker@v0.2.0
+        uses: bythepixel/urlchecker@v0.15.0
         with:
           hostname: ${{ matrix.domain }}
-          filename: ./${{ matrix.domain }}.json
+          filename: .${{ github.action_path }}/test-files/${{ matrix.domain }}.json
