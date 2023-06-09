@@ -27,8 +27,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Log paths
-        run: pwd && ls -la ./.github && ls -la ./.github/workflows && ls -la ./.github/workflows/test-files
+      - name: Get product  # example: lirias.t.libis.be  ->  lirias.
+        id: substring
+        run: echo "::set-output name=substring::${{ env.STRING_VAR | xpath_string('//text()[contains(., ".")][1]/substring-before(., ".")') }}"
+        env:
+          STRING_VAR: ${{ matrix.hostname }}
+      - name: Use substring
+        run: echo "The substring is ${{ steps.substring.outputs.substring }}"
       - name: Check URLs
         uses: bythepixel/urlchecker@v0.15.0
         with:
