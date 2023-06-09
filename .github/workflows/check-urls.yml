@@ -27,16 +27,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Get product  # example: lirias.t.libis.be  ->  lirias.
-        id: product
+      - name: Get product name from hostname  # example: lirias.t.libis.be  ->  lirias.
+        id: productname
         run: |
           STRING="${{ matrix.hostname }}"
           SUBSTRING="${STRING%%.*}."
           echo "::set-output name=substring::$SUBSTRING"
-      - name: Use substring
-        run: echo "The substring is ${{ steps.product.outputs.substring }}"
+      - name: Echo Product Name
+        run: echo "The product name is ${{ steps.productname.outputs.substring }}"
       - name: Check URLs
         uses: bythepixel/urlchecker@v0.15.0
         with:
           hostname: ${{ matrix.hostname }}
-          filename: ./.github/workflows/test-files/${{ matrix.hostname }}.json # Had to hardcode this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
+          filename: ./.github/workflows/traefik-routing-test-files/${{ steps.productname.outputs.substring }}"json # Had to hardcode part of this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
