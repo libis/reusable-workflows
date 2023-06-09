@@ -28,12 +28,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Get product  # example: lirias.t.libis.be  ->  lirias.
-        id: substring
-        run: echo "::set-output name=substring::${{ env.STRING_VAR | xpath_string('//text()[contains(., ".")][1]/substring-before(., ".")') }}"
-        env:
-          STRING_VAR: ${{ matrix.hostname }}
+        id: product
+        run: |
+          STRING="${{ matrix.hostname }}"
+          SUBSTRING="${STRING%%.*}."
+          echo "::set-output name=substring::$SUBSTRING"
       - name: Use substring
-        run: echo "The substring is ${{ steps.substring.outputs.substring }}"
+        run: echo "The substring is ${{ steps.product.outputs.substring }}"
       - name: Check URLs
         uses: bythepixel/urlchecker@v0.15.0
         with:
