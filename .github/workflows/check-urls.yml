@@ -39,4 +39,4 @@ jobs:
         uses: bythepixel/urlchecker@v0.15.0
         with:
           hostname: ${{ matrix.hostname }}
-          filename: ./.github/workflows/traefik-routing-test-files/${{ steps.productname.outputs.substring }}"json # Had to hardcode part of this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
+          filename: ./.github/workflows/traefik-routing-test-files/${{ steps.productname.outputs.substring }}json # Had to hardcode part of this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
