@@ -31,7 +31,7 @@ jobs:
         id: productname
         run: |
           STRING="${{ matrix.hostname }}"
-          SUBSTRING="${STRING%%.*}."
+          SUBSTRING="${STRING%%.*}"
           #echo "::set-output name=substring::$SUBSTRING"
           echo "substring=$SUBSTRING" >> $GITHUB_ENV
       - name: Echo Product Name
