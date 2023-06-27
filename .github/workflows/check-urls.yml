@@ -32,7 +32,6 @@ jobs:
         run: |
           STRING="${{ matrix.hostname }}"
           SUBSTRING="${STRING%%.*}"
-          #echo "::set-output name=substring::$SUBSTRING"
           echo "substring=$SUBSTRING" >> $GITHUB_ENV
       - name: Echo Product Name
         #run: echo "The product name is ${{ steps.productname.outputs.substring }}"
@@ -41,5 +40,6 @@ jobs:
         uses: bythepixel/urlchecker@v0.15.0
         with:
           hostname: ${{ matrix.hostname }}
-          #filename: ./.github/workflows/traefik-routing-test-files/${{ steps.productname.outputs.substring }}json # Had to hardcode part of this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
           filename: ./.github/workflows/traefik-routing-test-files/${{ env.substring }}.json # Had to hardcode part of this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
+        env:
+          DEBUG: '1'  # Set DEBUG to any non-empty string
