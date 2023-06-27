@@ -41,5 +41,3 @@ jobs:
         with:
           hostname: ${{ matrix.hostname }}
           filename: ./.github/workflows/traefik-routing-test-files/${{ env.substring }}.json # Had to hardcode part of this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
-        env:
-          DEBUG: '1'  # Set DEBUG to any non-empty string
