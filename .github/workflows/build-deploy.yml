@@ -67,6 +67,7 @@ jobs:
             ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ steps.dotenv.outputs.version }}
             ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
           provenance: false
+          continue-on-error: true
       -          
         name: MSTeams Notification
         uses: chrisdleech-pol/github-action-notify-teams@v1.0.0
