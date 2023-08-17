@@ -35,7 +35,7 @@ jobs:
       - 
         name: Dotenv Action
         id: dotenv
-        uses: falti/dotenv-action@v1.0.2  #gets the key value pairs the .env file and stores them for later use
+        uses: falti/dotenv-action@v1.0.2  # Gets the key value pairs from the .env file.
         with:
           log-variables: true
       -
@@ -56,29 +56,37 @@ jobs:
         uses: docker/setup-buildx-action@v2.4.0
         
       - 
-        name: Fetch Docker tags
-        id: dockertags # This ID allows us to refer to outputs set in this step
+        name: Fetch Docker tags and set new version
         run: |
-          TAG=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[] | select(test("^[0-9]+\\.[0-9]+"))' | head -1)
-        
+          TAG=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[] | select(test("^[0-9]+\\.[0-9]+"))' | head -1) 
+          REVERSE_DATE=$(date +%Y%m%d | rev)
+
           if [ ! -z "$TAG" ]; then
-            echo "All tags: $TAG"
             MAJOR=$(echo $TAG | cut -d'.' -f1)
             MINOR=$(echo $TAG | cut -d'.' -f2)
+
+            # If MAJOR is today's date, increment MINOR
+            if [ "$MAJOR" == "$REVERSE_DATE" ]; then
+                MINOR=$((MINOR + 1))
+            else
+                # Else, set MAJOR to today's reversed date and MINOR to 1
+                MAJOR=$REVERSE_DATE
+                MINOR=1
+            fi
           else
-            echo "No matching tag found. Using reverse date and 1 as fallback."
+            echo "No matching tag found. Using reverse date and 1 as fallback version."
             MAJOR=$(date +%Y%m%d | rev)
             MINOR=1
           fi
         
-          echo "::set-output name=major::$MAJOR"
-          echo "::set-output name=minor::$MINOR"
-
+          # Set environment variables
+          echo "MAJOR=$MAJOR" >> $GITHUB_ENV
+          echo "MINOR=$MINOR" >> $GITHUB_ENV
       - 
         name: Use Docker Tag Outputs
         run: |
-          echo "Major: ${{ steps.dockertags.outputs.major }}"
-          echo "Minor: ${{ steps.dockertags.outputs.minor }}"
+          echo "Major: $MAJOR"
+          echo "Minor: $MINOR"
 #      - 
 #        name: Build and push Docker image
 #        uses: docker/build-push-action@v3.3.0    #https://github.com/docker/build-push-action
