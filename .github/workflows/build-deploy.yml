@@ -101,11 +101,11 @@ jobs:
             ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
           provenance: false
           continue-on-error: true
-#      -          
-#        name: MSTeams Notification
-#        uses: chrisdleech-pol/github-action-notify-teams@v1.0.0
-#        with:
-#          TEAMS_URI: ${{ secrets.msteams_webhook }}
-#          TEAMS_MSG_TITLE: "Build ${{ job.status }}!"
-#          TEAMS_MSG_SUMMARY: "The docker build and deply flow for ${{ github.repository }} was a ${{ job.status }}!"
-#          TEAMS_MSG_TYPE: ${{ job.status }}
+      -          
+        name: MSTeams Notification
+        uses: chrisdleech-pol/github-action-notify-teams@v1.0.0
+        with:
+          TEAMS_URI: ${{ secrets.msteams_webhook }}
+          TEAMS_MSG_TITLE: "Build ${{ job.status }}!"
+          TEAMS_MSG_SUMMARY: "The docker build and deply flow for ${{ github.repository }} was a ${{ job.status }}!"
+          TEAMS_MSG_TYPE: ${{ job.status }}
