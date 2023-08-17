@@ -97,7 +97,7 @@ jobs:
           context: .
           push: true
           tags: | 
-            ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}::${{ env.MAJOR }}.${{ env.MINOR }}
+            ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ env.MAJOR }}.${{ env.MINOR }}
             ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
           provenance: false
       -          
