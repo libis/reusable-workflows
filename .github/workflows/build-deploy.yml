@@ -54,25 +54,48 @@ jobs:
       - 
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.4.0
+        
       - 
-        name: Build and push Docker image
-        uses: docker/build-push-action@v3.3.0    #https://github.com/docker/build-push-action
-        with:
-          file: Dockerfile
-          platforms: ${{ steps.dotenv.outputs.platform }}
-          build-args: VERSION=${{ steps.dotenv.outputs.version }}
-          context: .
-          push: true
-          tags: | 
-            ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ steps.dotenv.outputs.version }}
-            ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
-          provenance: false
-          continue-on-error: true
-      -          
-        name: MSTeams Notification
-        uses: chrisdleech-pol/github-action-notify-teams@v1.0.0
-        with:
-          TEAMS_URI: ${{ secrets.msteams_webhook }}
-          TEAMS_MSG_TITLE: "Build ${{ job.status }}!"
-          TEAMS_MSG_SUMMARY: "The docker build and deply flow for ${{ github.repository }} was a ${{ job.status }}!"
-          TEAMS_MSG_TYPE: ${{ job.status }}
+        name: Fetch and set Docker tags
+        run: |
+          TAG=$(curl -s --user  ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/library/remote-stats/tags/list | jq -r '.tags[] | select(test("^[0-9]+\\.[0-9]+"))' | head -1)
+        
+          if [ ! -z "$TAG" ]; then
+            MAJOR=$(echo $TAG | cut -d'.' -f1)
+            MINOR=$(echo $TAG | cut -d'.' -f2)
+            
+            echo "DOCKER_TAG=$TAG" >> $GITHUB_ENV
+            echo "MAJOR=$MAJOR" >> $GITHUB_ENV
+            echo "MINOR=$MINOR" >> $GITHUB_ENV
+          else
+            echo "No matching tag found."
+            exit 1
+          fi
+      -
+        name: Use Docker Tag Variables
+        run: |
+          echo "Docker Tag: $DOCKER_TAG"
+          echo "Major: $MAJOR"
+          echo "Minor: $MINOR"
+#      - 
+#        name: Build and push Docker image
+#        uses: docker/build-push-action@v3.3.0    #https://github.com/docker/build-push-action
+#        with:
+#          file: Dockerfile
+#          platforms: ${{ steps.dotenv.outputs.platform }}
+#          build-args: VERSION=${{ steps.dotenv.outputs.version }}
+#          context: .
+#          push: true
+#          tags: | 
+#            ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ steps.dotenv.outputs.version }}
+#            ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
+#          provenance: false
+#          continue-on-error: true
+#      -          
+#        name: MSTeams Notification
+#        uses: chrisdleech-pol/github-action-notify-teams@v1.0.0
+#        with:
+#          TEAMS_URI: ${{ secrets.msteams_webhook }}
+#          TEAMS_MSG_TITLE: "Build ${{ job.status }}!"
+#          TEAMS_MSG_SUMMARY: "The docker build and deply flow for ${{ github.repository }} was a ${{ job.status }}!"
+#          TEAMS_MSG_TYPE: ${{ job.status }}
