@@ -54,7 +54,6 @@ jobs:
       - 
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.4.0
-        
       - 
         name: Fetch Docker tags and set new version
         run: |
@@ -69,7 +68,6 @@ jobs:
             # Output to log
             echo "Old Major: $MAJOR"
             echo "Old Minor: $MINOR"
-            echo "Date: $REVERSE_DATE"
 
             # If MAJOR is today's date, increment MINOR
             if [ "$MAJOR" == "$REVERSE_DATE" ]; then
