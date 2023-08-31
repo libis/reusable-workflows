@@ -37,7 +37,7 @@ jobs:
         #run: echo "The product name is ${{ steps.productname.outputs.substring }}"
         run: echo "The product name is $substring"
       - name: Check URLs
-        uses: libis/urlchecker-extended@add-multi-status
+        uses: libis/urlchecker-extended@v.0.1.2
         with:
           hostname: ${{ matrix.hostname }}
           filename: ./.github/workflows/traefik-routing-test-files/${{ env.substring }}.json # Had to hardcode part of this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
