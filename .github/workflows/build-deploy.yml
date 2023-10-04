@@ -58,7 +58,7 @@ jobs:
       - 
         name: Fetch Docker tags and set new version
         run: |
-          TAGS=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[]) | select(test("^[0-9]+\\.[0-9]+"))' | head -1) 
+          TAGS=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[]') | select(test("^[0-9]+\\.[0-9]+"))' | head -1) 
           DIGEST=$(curl -s --head -H "Accept: application/vnd.docker.distribution.manifest.v2+json" --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$TAG | grep 'Docker-Content-Digest:' | awk '{print $2}' | tr -d '\r')
           REVERSE_DATE=$(date +%Y%m%d) # example: 20230817
 
