@@ -67,6 +67,9 @@ jobs:
           IFS=' ' read -ra TAGS_ARRAY <<< "$TAGS"
           TAG="${TAGS_ARRAY[-1]}"
 
+          echo "Curl tags: $TAGS"
+          echo "Tags after split: $TAGS_ARRAY"
+
           # Check if the last tag is 'latest'
           if [ "$TAG" == "latest" ]; then
             # Get the second-to-last tag
