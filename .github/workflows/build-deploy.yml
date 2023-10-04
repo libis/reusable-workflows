@@ -58,7 +58,7 @@ jobs:
       - 
         name: Fetch Docker tags and set new version
         run: |
-          TAGS=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[]')
+          TAGS=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[]' | jq -s -r 'join("\n")')
           DIGEST=$(curl -s --head -H "Accept: application/vnd.docker.distribution.manifest.v2+json" --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$TAG | grep 'Docker-Content-Digest:' | awk '{print $2}' | tr -d '\r')
           REVERSE_DATE=$(date +%Y%m%d) # example: 20230817
 
@@ -68,10 +68,14 @@ jobs:
           echo "Curl tags: $TAGS"
           echo "Tag: $TAG"
 
-          # Check if the last tag is 'latest'
+          # Get the last tag
+          TAG=$(echo "$TAGS" | tail -n1)
+          echo "Tag is: $TAG"
+
+          # Check if the tag is 'latest'
           if [ "$TAG" == "latest" ]; then
             # Get the second-to-last tag
-            TAG="${TAGS_ARRAY[-2]}"
+            TAG=$(echo "$TAGS" | tail -n2 | head -n1)
             echo "Second-to-last tag: $TAG"
           fi
 
