@@ -63,7 +63,7 @@ jobs:
           REVERSE_DATE=$(date +%Y%m%d) # example: 20230817
 
 
-          TAG="${TAGS[-1]}"
+          #TAG="${TAGS[-1]}"
 
           echo "Curl tags: $TAGS"
           echo "Tag: $TAG"
