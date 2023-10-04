@@ -63,8 +63,6 @@ jobs:
           REVERSE_DATE=$(date +%Y%m%d) # example: 20230817
 
 
-          # Split the tags into an array and get the last tag(most recent)
-          #IFS=' ' read -ra TAGS_ARRAY <<< "$TAGS"
           TAG="${TAGS[-1]}"
 
           echo "Curl tags: $TAGS"
