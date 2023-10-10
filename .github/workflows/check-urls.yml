@@ -7,15 +7,12 @@ name: Check URLs
 on:
   workflow_call:
     inputs:
-      webhook:
-        required: true
-        type: string
       hostnames:  # Should be json like array [ site1.com, site2.com ]
         required: true
         type: string
         
 env:
-  SLACK_WEBHOOK: ${{ inputs.webhook }}
+  SLACK_WEBHOOK: ${{ secrets.MSTEAMS_WEBHOOK }}  # inherited from the caller
 
 jobs:
   check-urls:
