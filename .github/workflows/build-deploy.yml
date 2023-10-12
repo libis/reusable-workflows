@@ -128,12 +128,12 @@ jobs:
           if [[ ! -z "$DIGEST" ]]; then
             curl -X DELETE --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$DIGEST
           fi
-      #-          
-      #  name: MSTeams Notification
-      #  if: always() # No matter what the outcome we want to run this step.
-      #  uses: chrisdleech-pol/github-action-notify-teams@v1.0.0
-      #  with:
-      #    TEAMS_URI: ${{ secrets.msteams_webhook }}
-      #    TEAMS_MSG_TITLE: "Build ${{ job.status }}!"
-      #    TEAMS_MSG_SUMMARY: "The docker build and deply flow for ${{ github.repository }} was a ${{ job.status }}!"
-      #    TEAMS_MSG_TYPE: ${{ job.status }}
+      -          
+        name: MSTeams Notification
+        if: always() # No matter what the outcome we want to run this step.
+        uses: chrisdleech-pol/github-action-notify-teams@v1.0.0
+        with:
+          TEAMS_URI: ${{ secrets.msteams_webhook }}
+          TEAMS_MSG_TITLE: "Build ${{ job.status }}!"
+          TEAMS_MSG_SUMMARY: "The docker build and deply flow for ${{ github.repository }} was a ${{ job.status }}!"
+          TEAMS_MSG_TYPE: ${{ job.status }}
