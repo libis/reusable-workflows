@@ -131,11 +131,11 @@ jobs:
       -          
         name: MSTeams Notification
         if: always() # No matter what the outcome we want to run this step.
-        uses: skitionek/notify-microsoft-teams@master
+        uses: freezer00/teams-webhook-action@v1.4.1
         with:
           # webhook_url: ${{ secrets.msteams_webhook }}
           webhook_url: "https://kuleuven.webhook.office.com/webhookb2/70172ee1-ea8e-4794-afcd-720728f46d22@3973589b-9e40-4eb5-800e-b0b6383d1621/IncomingWebhook/debf2857413549ef832de8926744af6d/62970b8d-d41f-45d5-bf78-35ea5b671fc7"
-          hide_facts: true
-          # TEAMS_MSG_TITLE: "Build ${{ job.status }}!"
-          # TEAMS_MSG_SUMMARY: "The docker build and deply flow for ${{ github.repository }} was a ${{ job.status }}!"
-          # TEAMS_MSG_TYPE: ${{ job.status }}
+          needs: ${{ toJson(needs) }}
+          job: ${{ toJson(job) }}
+          title: Custom title
+          hide_facts: false
