@@ -136,5 +136,8 @@ jobs:
           # webhook_url: ${{ secrets.msteams_webhook }}
           webhook_url: "https://kuleuven.webhook.office.com/webhookb2/70172ee1-ea8e-4794-afcd-720728f46d22@3973589b-9e40-4eb5-800e-b0b6383d1621/IncomingWebhook/debf2857413549ef832de8926744af6d/62970b8d-d41f-45d5-bf78-35ea5b671fc7"
           job: ${{ toJson(job) }}
-          title: ${{ job.status == 'success' && '<span style="font-weight:bold; font-size:16px; color:green;">Build Succeeded</span>' || '##❌ Build Failed' }}
-          hide_facts: false
+          title: ${{ job.status == 'success' && '<span style="font-weight:bold; font-size:16px; color:green;">Build Succeeded</span>' || '<span style="font-weight:bold; font-size:16px; color:red;">Build Failed</span>' }}
+          additional_button_title: |-
+            View Details
+          additional_button_url: |-
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
