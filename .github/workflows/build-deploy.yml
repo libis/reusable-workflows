@@ -109,25 +109,25 @@ jobs:
           echo "New Major: $MAJOR"
           echo "New Minor: $MINOR"
           echo "Digest: $DIGEST"
-      - 
-         name: Build and push Docker image
-         uses: docker/build-push-action@v3.3.0    #https://github.com/docker/build-push-action
-         with:
-          file: ${{ steps.dotenv.outputs.dockerfilelocation }}Dockerfile
-          platforms: ${{ steps.dotenv.outputs.platform }}
-          build-args: VERSION=:${{ env.MAJOR }}.${{ env.MINOR }}
-          context: .
-          push: true
-          tags: | 
-            ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ env.MAJOR }}.${{ env.MINOR }}
-            ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
-          provenance: false
-      - 
-        name: Delete previous image
-        run: |
-          if [[ ! -z "$DIGEST" ]]; then
-            curl -X DELETE --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$DIGEST
-          fi
+      #- 
+      #   name: Build and push Docker image
+      #   uses: docker/build-push-action@v3.3.0    #https://github.com/docker/build-push-action
+      #   with:
+      #    file: ${{ steps.dotenv.outputs.dockerfilelocation }}Dockerfile
+      #    platforms: ${{ steps.dotenv.outputs.platform }}
+      #    build-args: VERSION=:${{ env.MAJOR }}.${{ env.MINOR }}
+      #    context: .
+      #    push: true
+      #    tags: | 
+      #      ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ env.MAJOR }}.${{ env.MINOR }}
+      #      ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
+      #    provenance: false
+      #- 
+      #  name: Delete previous image
+      #  run: |
+      #    if [[ ! -z "$DIGEST" ]]; then
+      #      curl -X DELETE --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$DIGEST
+      #    fi
       -          
         name: MSTeams Notification
         if: always() # No matter what the outcome we want to run this step.
@@ -136,5 +136,5 @@ jobs:
           # webhook_url: ${{ secrets.msteams_webhook }}
           webhook_url: "https://kuleuven.webhook.office.com/webhookb2/70172ee1-ea8e-4794-afcd-720728f46d22@3973589b-9e40-4eb5-800e-b0b6383d1621/IncomingWebhook/debf2857413549ef832de8926744af6d/62970b8d-d41f-45d5-bf78-35ea5b671fc7"
           job: ${{ toJson(job) }}
-          title: ${{ job.status == 'success' && '##✅ Success' || '##❌ Failed' }}
+          title: ${{ job.status == 'success' && '#✅ Success <b>HTML</b>' || '##❌ Failed' }}
           hide_facts: false
