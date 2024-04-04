@@ -109,30 +109,44 @@ jobs:
           echo "New Major: $MAJOR"
           echo "New Minor: $MINOR"
           echo "Digest: $DIGEST"
-      - 
-         name: Build and push Docker image
-         uses: docker/build-push-action@v3.3.0    #https://github.com/docker/build-push-action
-         with:
-          file: ${{ steps.dotenv.outputs.dockerfilelocation }}Dockerfile
-          platforms: ${{ steps.dotenv.outputs.platform }}
-          build-args: VERSION=:${{ env.MAJOR }}.${{ env.MINOR }}
-          context: .
-          push: true
-          tags: | 
-            ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ env.MAJOR }}.${{ env.MINOR }}
-            ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
-          provenance: false
-      - 
-        name: Delete previous image
-        run: |
-          if [[ ! -z "$DIGEST" ]]; then
-            curl -X DELETE --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$DIGEST
-          fi
-      -          
-        name: MSTeams Notification
-        if: always() # No matter what the outcome we want to run this step.
-        uses: freezer00/teams-webhook-action@v1.4.1
+      -
+        name: Retrieve metadata
+        id: metadata
+        uses: docker/metadata-action@v5.5.1
         with:
-          webhook_url: ${{ secrets.msteams_webhook }}
-          job: ${{ toJson(job) }}
-          title: ${{ job.status == 'success' && '<span style="font-weight:bold; font-size:16px; color:green;">Build Succeeded</span>' || '<span style="font-weight:bold; font-size:16px; color:red;">Build Failed</span>' }}
+          images: ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}
+          tags: |
+            type=semver,pattern={{major}}.{{minor}}.{{patch}}
+            type=semver,pattern={{major}}.{{minor}}
+      - 
+        name: Echo tags
+        run: |
+          echo "Generated Tags: ${{ steps.metadata.outputs.tags }}"
+      
+      #- 
+      #   name: Build and push Docker image
+      #   uses: docker/build-push-action@v3.3.0    #https://github.com/docker/build-push-action
+      #   with:
+      #    file: ${{ steps.dotenv.outputs.dockerfilelocation }}Dockerfile
+      #    platforms: ${{ steps.dotenv.outputs.platform }}
+      #    build-args: VERSION=:${{ env.MAJOR }}.${{ env.MINOR }}
+      #    context: .
+      #    push: true
+      #    tags: | 
+      #      ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ env.MAJOR }}.${{ env.MINOR }}
+      #      ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
+      #    provenance: false
+      #- 
+      #  name: Delete previous image
+      #  run: |
+      #    if [[ ! -z "$DIGEST" ]]; then
+      #      curl -X DELETE --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$DIGEST
+      #    fi
+      #-          
+      #  name: MSTeams Notification
+      #  if: always() # No matter what the outcome we want to run this step.
+      #  uses: freezer00/teams-webhook-action@v1.4.1
+      #  with:
+      #    webhook_url: ${{ secrets.msteams_webhook }}
+      #    job: ${{ toJson(job) }}
+      #    title: ${{ job.status == 'success' && '<span style="font-weight:bold; font-size:16px; color:green;">Build Succeeded</span>' || '<span style="font-weight:bold; font-size:16px; color:red;">Build Failed</span>' }}
