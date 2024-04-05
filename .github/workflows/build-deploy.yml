@@ -55,10 +55,6 @@ jobs:
       - 
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.4.0
-      
-      - name: Extract branch name
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
       - 
         name: Fetch Docker tags and set new version
         run: |
@@ -67,19 +63,11 @@ jobs:
           REVERSE_DATE=$(date +%Y%m%d) # example: 20230817
           echo "Curl tags: $TAGS"
 
-          # Get the last tag
-          #TAG=$(echo "$TAGS" | tail -n1)
-          #echo "Tag is: $TAG"
-
-          # Check if the tag is 'latest'
-          #if [ "$TAG" == "latest" ]; then
-          #  # Get the second-to-last tag
-          #  TAG=$(echo "$TAGS" | tail -n2 | head -n1)
-          #  echo "Second-to-last tag: $TAG"
-          #fi
-          
-          if [[ "${{ steps.dotenv.outputs.addbranchnametoversion }}" == "true" ]]; then
+          #if [[ "${{ steps.dotenv.outputs.addbranchnametoversion }}" == "true" ]]; then
+          #MUST REPLACE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          if [[ "true" == "true" ]]; then
             BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+            echo "Branch name: $Branch"
             
             # Convert tags to array
             IFS=$'\n' read -rd '' -a sorted_tags <<<"$TAGS"
