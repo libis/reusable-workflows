@@ -79,6 +79,11 @@ jobs:
               break # Exit the loop if no matching version is found
             fi
           done
+
+          # Append branch name to VERSION if ADD_BRANCH_NAME_TO_VERSION is true
+          if [[ "$ADD_BRANCH_NAME_TO_VERSION" == "true" ]]; then
+            VERSION="$VERSION-$BRANCH_NAME"
+          fi
     
           echo "Final version for use: $VERSION"
 
