@@ -59,65 +59,37 @@ jobs:
         name: Fetch Docker tags and set new version
         run: |
           # Using the API, get all tags from the repo then remove the 'lates' tag. 
-          TAGS=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[]' | grep -v '^latest$' | sort)
-          REVERSE_DATE=$(date +%Y%m%d) # example: 20230817
+          TAGS=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[]')
           echo "Curl tags: $TAGS"
-
-          #if [[ "${{ steps.dotenv.outputs.addbranchnametoversion }}" == "true" ]]; then
-          #MUST REPLACE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-          if [[ "true" == "true" ]]; then
-            BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
-            echo "Branch name: $Branch"
-            
-            # Convert tags to array
-            IFS=$'\n' read -rd '' -a sorted_tags <<<"$TAGS"
-      
-            # Loop through tags in reverse
-            for (( idx=${#sorted_tags[@]}-1 ; idx>=0 ; idx-- )) ; do
-              tag="${sorted_tags[idx]}"
-              if [[ "$tag" == *"$BRANCH" ]]; then
-                echo "First tag ending with the current branch ($CURRENT_BRANCH): $tag"
-                break
-              fi
-            done
-
-            # If we get a valid tag back
-            if [ ! -z "$TAG" ]; then
-              MAJOR=$(echo $TAG | cut -d'.' -f1)
-              MINOR=$(echo $TAG | cut -d'.' -f2)
-              
-              # Output to log
-              echo "Old Major: $MAJOR"
-              echo "Old Minor: $MINOR"
-              echo "Branch name: $BRANCH"
-
-              # If MAJOR is today's date, increment MINOR
-              if [ "$MAJOR" == "$REVERSE_DATE" ]; then
-                MINOR=$((MINOR + 1))
-              else
-                # Else, set MAJOR to today's reversed date and MINOR to 1
-                MAJOR=$REVERSE_DATE
-                MINOR=1
-              fi
-            else # no match was found, create new tag
-              echo "No matching tag found. Using date.1-branchname as default version."
-              VERSION=$(date +%Y%m%d | rev) + ".1-" + $BRANCH
-              echo "Version: $VERSION"
-            fi
-          fi
           
+          MAJOR=$(date +%Y%m%d) # example: 20230817
+          MINOR=1
+    
+          # Convert TAGS to an array and loop through
+          IFS=' ' read -r -a tags_array <<< "$TAGS"
+          while :; do
+            VERSION="$MAJOR.$MINOR"
+      
+            # Check if any tag starts with VERSION
+            if printf '%s\n' "${tags_array[@]}" | grep -q -e "^$VERSION"; then
+              echo "A version starting with $VERSION found. Incrementing and checking again..."
+              ((VERSION_NUM++)) # Increment the version number
+            else
+              echo "No version starting with $VERSION found. Stopping."
+              break # Exit the loop if no matching version is found
+            fi
+          done
+    
+          echo "Final version for use: $VERSION"
+
           # Now that we have the tag of the last build we use it to get the digest so we can delete it after the new build is done
-          DIGEST=$(curl -s --head -H "Accept: application/vnd.docker.distribution.manifest.v2+json" --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$TAG | grep 'Docker-Content-Digest:' | awk '{print $2}' | tr -d '\r')
+          #DIGEST=$(curl -s --head -H "Accept: application/vnd.docker.distribution.manifest.v2+json" --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$TAG | grep 'Docker-Content-Digest:' | awk '{print $2}' | tr -d '\r')
           
           # Set environment variables
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           # Output to log
           echo "New Version: $VERSION"
-          echo "Digest: $DIGEST"
-      - 
-        name: Echo tags
-        run: |
-          echo "Generated Tags: ${{ steps.metadata.outputs.tags }}"
+          #echo "Digest: $DIGEST"
       
       #- 
       #   name: Build and push Docker image
