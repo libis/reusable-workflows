@@ -61,24 +61,23 @@ jobs:
           # Using the API, get all tags from the repo then remove the 'lates' tag. 
           TAGS=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[]')
           echo "Curl tags: $TAGS"
-          
-          MAJOR=$(date +%Y%m%d) # example: 20230817
-          MINOR=1
-    
-          # Convert TAGS to an array and loop through
-          IFS=' ' read -r -a tags_array <<< "$TAGS"
-          while [ -z "$TAGS" ]; do # While TAGS is not empty
-            VERSION="$MAJOR.$MINOR"
-      
-            # Check if any tag starts with VERSION
-            if printf '%s\n' "${tags_array[@]}" | grep -q -e "^$VERSION"; then
-              echo "A version starting with $VERSION found. Incrementing and checking again..."
-              ((VERSION_NUM++)) # Increment the version number
-            else
-              echo "No version starting with $VERSION found. Stopping."
-              break # Exit the loop if no matching version is found
-            fi
-          done
+
+          VERSION="$(date +%Y%m%d).1" # example: 20230817.1
+
+          if [ -n "$TAGS" ]; then
+            # Convert TAGS to an array and loop through
+            IFS=' ' read -r -a tags_array <<< "$TAGS"
+            while :; do
+              # Check if any tag starts with VERSION
+              if printf '%s\n' "${tags_array[@]}" | grep -q -e "^$VERSION"; then
+                echo "A version starting with $VERSION found. Incrementing and checking again..."
+                ((VERSION_NUM++)) # Increment the version number
+              else
+                echo "No version starting with $VERSION found. Stopping."
+                break # Exit the loop if no matching version is found
+              fi
+            done
+          fi
 
           # Append branch name to VERSION if ADD_BRANCH_NAME_TO_VERSION is true
           if [[ "$ADD_BRANCH_NAME_TO_VERSION" == "true" ]]; then
