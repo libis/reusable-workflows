@@ -59,7 +59,7 @@ jobs:
         name: Fetch Docker tags and set new version
         run: |
           # Using the API, get all tags from the repo then remove the 'lates' tag. 
-          TAGS=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[]')
+          TAGS=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[]? // empty')
           echo "Curl tags: $TAGS"
 
           VERSION="$(date +%Y%m%d).1" # example: 20230817.1
@@ -79,9 +79,9 @@ jobs:
             done
           fi
 
-          # Append branch name to VERSION if ADD_BRANCH_NAME_TO_VERSION is true
-          if [[ "$ADD_BRANCH_NAME_TO_VERSION" == "true" ]]; then
-            VERSION="$VERSION-$BRANCH_NAME"
+          # Append branch name to the version if ADD_BRANCH_NAME_TO_VERSION is true, found in .env file. 
+          if [[ ${{ steps.dotenv.outputs.addbranchnametoversion }} == 'true' ]]; then
+            VERSION="$VERSION-$GITHUB_REF_NAME"
           fi
     
           echo "Final version for use: $VERSION"
