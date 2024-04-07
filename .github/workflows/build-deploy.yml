@@ -67,7 +67,7 @@ jobs:
     
           # Convert TAGS to an array and loop through
           IFS=' ' read -r -a tags_array <<< "$TAGS"
-          while :; do
+          while [ -z "$TAGS" ]; do # While TAGS is not empty
             VERSION="$MAJOR.$MINOR"
       
             # Check if any tag starts with VERSION
