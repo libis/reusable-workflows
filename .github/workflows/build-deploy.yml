@@ -101,7 +101,7 @@ jobs:
          with:
           file: ${{ steps.dotenv.outputs.dockerfilelocation }}Dockerfile
           platforms: ${{ steps.dotenv.outputs.platform }}
-          build-args: VERSION=:$VERSION
+          build-args: VERSION=$VERSION
           context: .
           push: true
           tags: | 
