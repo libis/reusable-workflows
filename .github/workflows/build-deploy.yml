@@ -70,8 +70,12 @@ jobs:
             while :; do
               # Check if any tag starts with VERSION
               if printf '%s\n' "${tags_array[@]}" | grep -q -e "^$VERSION"; then
-                echo "A version starting with $VERSION found. Incrementing and checking again..."
-                ((VERSION_NUM++)) # Increment the version number
+                echo "A version starting with $VERSION found. Incrementing Minor and checking again..."
+                prefix=${VERSION%.*}
+                num=${VERSION#*.}
+                new_num=$((num + 1))  # Increment the minor part
+                # Reassemble the version
+                VERSION="${prefix}.${new_num}"
               else
                 echo "No version starting with $VERSION found. Stopping."
                 break # Exit the loop if no matching version is found
