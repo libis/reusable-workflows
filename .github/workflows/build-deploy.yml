@@ -118,11 +118,11 @@ jobs:
       #    if [[ ! -z "$DIGEST" ]]; then
       #      curl -X DELETE --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$DIGEST
       #    fi
-      #-          
-      #  name: MSTeams Notification
-      #  if: always() # No matter what the outcome we want to run this step.
-      #  uses: freezer00/teams-webhook-action@v1.4.1
-      #  with:
-      #    webhook_url: ${{ secrets.msteams_webhook }}
-      #    job: ${{ toJson(job) }}
-      #    title: ${{ job.status == 'success' && '<span style="font-weight:bold; font-size:16px; color:green;">Build Succeeded</span>' || '<span style="font-weight:bold; font-size:16px; color:red;">Build Failed</span>' }}
+      -          
+        name: MSTeams Notification
+        if: always() # No matter what the outcome we want to run this step.
+        uses: freezer00/teams-webhook-action@v1.4.1
+        with:
+          webhook_url: ${{ secrets.msteams_webhook }}
+          job: ${{ toJson(job) }}
+          title: ${{ job.status == 'success' && '<span style="font-weight:bold; font-size:16px; color:green;">Build Succeeded</span>' || '<span style="font-weight:bold; font-size:16px; color:red;">Build Failed</span>' }}
