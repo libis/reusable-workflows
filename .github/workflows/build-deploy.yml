@@ -101,11 +101,11 @@ jobs:
          with:
           file: ${{ steps.dotenv.outputs.dockerfilelocation }}Dockerfile
           platforms: ${{ steps.dotenv.outputs.platform }}
-          build-args: VERSION=:${{ env.MAJOR }}.${{ env.MINOR }}
+          build-args: VERSION=:$VERSION
           context: .
           push: true
           tags: | 
-            ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ env.MAJOR }}.${{ env.MINOR }}
+            ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:$VERSION
             ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
           provenance: false
       #- 
