@@ -84,7 +84,7 @@ jobs:
           fi
 
           # Append branch name to the version if ADD_BRANCH_NAME_TO_VERSION is true, found in .env file. 
-          if [[ ${{ steps.dotenv.outputs.addbranchnametoversion }} == 'true' ]]; then
+          if [[ -n "${{ steps.dotenv.outputs.addbranchnametoversion }}" && "${{ steps.dotenv.outputs.addbranchnametoversion }}" == 'true' ]]; then
             VERSION="$VERSION-$GITHUB_REF_NAME"
           fi
     
