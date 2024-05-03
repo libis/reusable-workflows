@@ -118,6 +118,14 @@ jobs:
       #    if [[ ! -z "$DIGEST" ]]; then
       #      curl -X DELETE --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$DIGEST
       #    fi
+      - 
+        name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.19.0
+        with:
+          image-ref: '${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest'
+          format: 'sarif'
+          severity: 'CRITICAL,HIGH'
+          output: 'trivy-results.sarif'
       -          
         name: MSTeams Notification
         if: always() # No matter what the outcome we want to run this step.
