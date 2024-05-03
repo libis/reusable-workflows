@@ -129,6 +129,11 @@ jobs:
         env:
           TRIVY_USERNAME: ${{ secrets.username }}
           TRIVY_PASSWORD: ${{ secrets.password }}
+      - 
+        name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
       #-          
       #  name: MSTeams Notification
       #  if: always() # No matter what the outcome we want to run this step.
