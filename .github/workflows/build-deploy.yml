@@ -125,20 +125,20 @@ jobs:
           image-ref: '${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest'
           format: 'sarif'
           severity: 'CRITICAL,HIGH'
-          output: 'trivy-results.sarif'
+          output: trivy.txt
         env:
           TRIVY_USERNAME: ${{ secrets.username }}
           TRIVY_PASSWORD: ${{ secrets.password }}
-      - 
-        name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'
-      #-          
-      #  name: MSTeams Notification
-      #  if: always() # No matter what the outcome we want to run this step.
-      #  uses: freezer00/teams-webhook-action@v1.4.1
-      #  with:
-      #    webhook_url: ${{ secrets.msteams_webhook }}
-      #    job: ${{ toJson(job) }}
-      #    title: ${{ job.status == 'success' && '<span style="font-weight:bold; font-size:16px; color:green;">Build Succeeded</span>' || '<span style="font-weight:bold; font-size:16px; color:red;">Build Failed</span>' }}
+      - name: Publish Trivy Output to Summary
+        run: |
+          if [[ -s trivy.txt ]]; then
+            {
+              echo "### Security Output"
+              echo "<details><summary>Click to expand</summary>"
+              echo ""
+              echo '```terraform'
+              cat trivy.txt
+              echo '```'
+              echo "</details>"
+            } >> $GITHUB_STEP_SUMMARY
+          fi
