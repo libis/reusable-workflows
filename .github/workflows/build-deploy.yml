@@ -141,6 +141,8 @@ jobs:
               echo '```'
               echo "</details>"
             } >> $GITHUB_STEP_SUMMARY
+          else
+            ls -la
           fi
       #-          
       #  name: MSTeams Notification
