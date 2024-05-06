@@ -132,6 +132,7 @@ jobs:
       - 
         name: Publish Trivy Output to Summary
         run: |
+          ls -la
           if [[ -s trivy.txt ]]; then
             {
               echo "### Security Output"
