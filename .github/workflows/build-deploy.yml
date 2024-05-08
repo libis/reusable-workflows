@@ -132,18 +132,16 @@ jobs:
       - 
         name: Publish Trivy Output to Summary
         run: |
-          ls -la
           if [[ -s trivy.txt ]]; then
             {
-              echo "### Security Output"
+              echo "### Trivy Scan Output"
               echo "<details><summary>Click to expand</summary>"
               echo ""
+              echo '```terraform'
               cat trivy.txt
               echo '```'
               echo "</details>"
             } >> $GITHUB_STEP_SUMMARY
-          else
-            ls -la
           fi
       #-          
       #  name: MSTeams Notification
