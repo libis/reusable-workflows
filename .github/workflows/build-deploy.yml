@@ -146,6 +146,8 @@ jobs:
         name: Create link to summary
         id: link
         uses: pl-strflt/job-summary-url-action@v1
+        with:
+          job: 'build-deploy'
       -          
         name: MSTeams Notification
         if: always() # No matter what the outcome we want to run this step.
