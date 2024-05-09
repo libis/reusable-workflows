@@ -142,13 +142,19 @@ jobs:
               echo "</details>"
             } >> $GITHUB_STEP_SUMMARY
           fi
+      - run: |
+          echo ${{ github.repository }}
+          echo ${{ github.job }}
+          echo ${{ github.action }}
+          echo ${{ github.job }}
+      
       - 
         name: Create link to summary
         id: link
         uses: pl-strflt/job-summary-url-action@v1
         with:
-          # job: "${{ github.jobs[github.job].name }}"
-          job: ${{ env.GITHUB_JOB }} 
+          job: "${{ github.jobs[github.job].name }}"
+          #job: ${{ github.job }}
       -          
         name: MSTeams Notification
         if: always() # No matter what the outcome we want to run this step.
