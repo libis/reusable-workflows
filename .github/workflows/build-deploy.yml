@@ -142,6 +142,10 @@ jobs:
               echo "</details>"
             } >> $GITHUB_STEP_SUMMARY
           fi
+      - 
+        name: Create link to summary
+        id: link
+        uses: pl-strflt/job-summary-url-action@v1
       -          
         name: MSTeams Notification
         if: always() # No matter what the outcome we want to run this step.
@@ -153,4 +157,4 @@ jobs:
           additional_button_title: |-
            Security Scan
           additional_button_url: |-
-           https://github.com/libis/remote-stats/actions/runs/9002654167/attempts/1#summary-24731431924
+           '${{ steps.link.outputs.job_summary_url }}'
