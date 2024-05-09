@@ -147,7 +147,8 @@ jobs:
         id: link
         uses: pl-strflt/job-summary-url-action@v1
         with:
-          job: ${{ github.jobs[github.job].name }}"
+          # job: "${{ github.jobs[github.job].name }}"
+          job: ${{ env.GITHUB_JOB }} 
       -          
         name: MSTeams Notification
         if: always() # No matter what the outcome we want to run this step.
