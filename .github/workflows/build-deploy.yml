@@ -150,11 +150,19 @@ jobs:
           echo "::set-output name=repo_name::$REPO_NAME"
           URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/attempts/1#summary-${GITHUB_RUN_ATTEMPT}"
           echo "Dynamic URL: $URL"
-      - uses: austenstone/job-summary-to-pdf@main
-        id: job-summary
-        with:
-          create-pdf: false
-      - run: echo "${{ steps.job-summary.outputs.job-summary }}"
+      - name: Fetch Job Summary ID
+        id: summary_id
+        run: |
+          # Get the run ID from the current workflow
+          run_id=${{ github.run_id }}
+        
+          # Fetch the runs for the current job
+          response=$(curl -X GET -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id/jobs)
+        
+          # Extract the last ID from the HTML URL
+          summary_id=$(echo $response | jq -r '.jobs[-1].html_url' | sed 's/.*\/\([0-9]*\)$/\1/')
+        
+          echo "Summary ID: $summary_id"
       #- 
       #  name: Create link to summary
       #  id: link
