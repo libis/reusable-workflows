@@ -157,6 +157,9 @@ jobs:
           URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/attempts/1#summary-${summary_id}"
           echo "Dynamic URL: $URL"
           echo "::set-output name=url::$URL" # Store for later use
+      - name: Use the URL
+        run: |
+          echo "The generated URL is ${{ steps.summary_url.outputs.url }}"
       - 
         name: MSTeams Notification
         if: always() # No matter what the outcome we want to run this step.
@@ -168,4 +171,4 @@ jobs:
           additional_button_title: |-
             Security Scan
           additional_button_url: |-
-            '${{ steps.summary_url.outputs.url }}'
+            'http://google.com'
