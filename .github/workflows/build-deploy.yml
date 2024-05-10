@@ -142,8 +142,8 @@ jobs:
               echo "</details>"
             } >> $GITHUB_STEP_SUMMARY
           fi
-      - name: Get repository name
-        id: repo_name
+      - name: Build summary URL
+        id: summary_url
         run: |
           REPO_NAME="${GITHUB_REPOSITORY##*/}"
           echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
@@ -167,4 +167,4 @@ jobs:
           additional_button_title: |-
            Security Scan
           additional_button_url: |-
-           '${{ steps.link.outputs.job_summary_url }}'
+           '${{ steps.summary_url.outputs.URL }}'
