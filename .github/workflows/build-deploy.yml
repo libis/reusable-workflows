@@ -150,7 +150,11 @@ jobs:
           echo "::set-output name=repo_name::$REPO_NAME"
           URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/attempts/1#summary-${GITHUB_RUN_ATTEMPT}"
           echo "Dynamic URL: $URL"
-          gh run view --log | grep GITHUB_STEP_SUMMARY 
+      - uses: austenstone/job-summary-to-pdf@main
+        id: job-summary
+        with:
+          create-pdf: false
+      - run: echo "${{ steps.job-summary.outputs.job-summary }}"
       #- 
       #  name: Create link to summary
       #  id: link
