@@ -174,5 +174,5 @@ jobs:
             Security Scan
           additional_button_url: |-
             https://google.com
-            'https://google.de'
+            https://google.de
             "${{ steps.summary_url.outputs.url }}"
