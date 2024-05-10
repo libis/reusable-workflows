@@ -175,4 +175,4 @@ jobs:
           additional_button_url: |-
             https://google.com
             https://google.de
-            "${{ steps.summary_url.outputs.url }}"
+            ${{ steps.summary_url.outputs.url }}
