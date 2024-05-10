@@ -169,10 +169,6 @@ jobs:
           job: ${{ toJson(job) }}
           title: ${{ job.status == 'success' && '<span style="font-weight:bold; font-size:16px; color:green;">Build Succeeded</span>' || '<span style="font-weight:bold; font-size:16px; color:red;">Build Failed</span>' }}
           additional_button_title: |-
-            Link to Google
-            TestButton
             Security Scan
           additional_button_url: |-
-            https://google.com
-            https://google.de
             ${{ steps.summary_url.outputs.url }}
