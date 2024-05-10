@@ -150,6 +150,7 @@ jobs:
           echo "::set-output name=repo_name::$REPO_NAME"
           URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/attempts/1#summary-${GITHUB_RUN_ATTEMPT}"
           echo "Dynamic URL: $URL"
+          gh run view --log | grep GITHUB_STEP_SUMMARY 
       #- 
       #  name: Create link to summary
       #  id: link
