@@ -156,6 +156,7 @@ jobs:
           
           URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/attempts/1#summary-${summary_id}"
           echo "Dynamic URL: $URL"
+          echo "url=$URL" >> $GITHUB_OUTPUT # Store for later use
       - 
         name: MSTeams Notification
         if: always() # No matter what the outcome we want to run this step.
@@ -167,4 +168,4 @@ jobs:
           additional_button_title: |-
             Security Scan
           additional_button_url: |-
-            ${{ steps.summary_url.outputs.url }}
+            '${{ steps.summary_url.outputs.url }}'
