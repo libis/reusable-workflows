@@ -167,4 +167,4 @@ jobs:
           additional_button_title: |-
            Security Scan
           additional_button_url: |-
-           '${{ steps.summary_url.outputs.URL }}'
+           '${{ steps.summary_url.outputs.url }}'
