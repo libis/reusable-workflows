@@ -156,7 +156,7 @@ jobs:
           
           URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/attempts/1#summary-${summary_id}"
           echo "Dynamic URL: $URL"
-          echo "url=$URL" >> $GITHUB_OUTPUT # Store for later use
+          echo "::set-output name=url::$URL" # Store for later use
       - 
         name: MSTeams Notification
         if: always() # No matter what the outcome we want to run this step.
