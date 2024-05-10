@@ -148,12 +148,14 @@ jobs:
           REPO_NAME="${GITHUB_REPOSITORY##*/}"
           echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
           echo "::set-output name=repo_name::$REPO_NAME"
-      - 
-        name: Create link to summary
-        id: link
-        uses: pl-strflt/job-summary-url-action@v1
-        with:
-          job: ${{ steps.repo_name.outputs.repo_name }}
+          URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/attempts/1#summary-${GITHUB_RUN_ATTEMPT}"
+          echo "Dynamic URL: $URL"
+      #- 
+      #  name: Create link to summary
+      #  id: link
+      #  uses: pl-strflt/job-summary-url-action@v1
+      #  with:
+      #    job: ${{ steps.repo_name.outputs.repo_name }}
       -          
         name: MSTeams Notification
         if: always() # No matter what the outcome we want to run this step.
