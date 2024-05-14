@@ -118,7 +118,49 @@ jobs:
       #    if [[ ! -z "$DIGEST" ]]; then
       #      curl -X DELETE --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$DIGEST
       #    fi
-      -          
+      - 
+        name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.19.0
+        with:
+          image-ref: '${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest'
+          format: 'table'
+          #severity: 'CRITICAL,HIGH'
+          output: trivy.txt
+        env:
+          TRIVY_USERNAME: ${{ secrets.username }}
+          TRIVY_PASSWORD: ${{ secrets.password }}
+      - 
+        name: Publish Trivy Output to Summary
+        run: |
+          if [[ -s trivy.txt ]]; then
+            {
+              echo "### Trivy Scan Output"
+              echo ""
+              echo '```terraform'
+              cat trivy.txt
+              echo '```'
+              echo "</details>"
+            } >> $GITHUB_STEP_SUMMARY
+          fi
+      - name: Build summary URL
+        id: summary_url
+        run: |
+          REPO_NAME="${GITHUB_REPOSITORY##*/}"
+          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
+          echo "::set-output name=repo_name::$REPO_NAME"
+
+          # Get the run ID from the current workflow/Fetch the runs for the current job/Extract the last ID from the HTML URL
+          run_id=${{ github.run_id }}
+          response=$(curl -X GET -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id/jobs)
+          summary_id=$(echo $response | jq -r '.jobs[-1].html_url' | sed 's/.*\/\([0-9]*\)$/\1/')
+          
+          URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/attempts/1#summary-${summary_id}"
+          echo "Dynamic URL: $URL"
+          echo "::set-output name=url::$URL" # Store for later use
+      - name: Use the URL
+        run: |
+          echo "The generated URL is ${{ steps.summary_url.outputs.url }}"
+      - 
         name: MSTeams Notification
         if: always() # No matter what the outcome we want to run this step.
         uses: freezer00/teams-webhook-action@v1.4.1
@@ -126,3 +168,7 @@ jobs:
           webhook_url: ${{ secrets.msteams_webhook }}
           job: ${{ toJson(job) }}
           title: ${{ job.status == 'success' && '<span style="font-weight:bold; font-size:16px; color:green;">Build Succeeded</span>' || '<span style="font-weight:bold; font-size:16px; color:red;">Build Failed</span>' }}
+          additional_button_title: |-
+            Security Scan
+          additional_button_url: |-
+            ${{ steps.summary_url.outputs.url }}
