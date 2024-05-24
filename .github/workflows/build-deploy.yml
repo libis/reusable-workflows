@@ -124,7 +124,7 @@ jobs:
         with:
           image-ref: '${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest'
           format: 'table'
-          #severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL,HIGH'
           output: trivy.txt
         env:
           TRIVY_USERNAME: ${{ secrets.username }}
