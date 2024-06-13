@@ -108,6 +108,7 @@ jobs:
           build-args: VERSION=${{ env.VERSION }}
           context: .
           push: true
+          no-cache: true
           tags: | 
             ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ env.VERSION }}
             ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
