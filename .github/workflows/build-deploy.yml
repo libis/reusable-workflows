@@ -125,6 +125,7 @@ jobs:
         id: push-docker-image
         run: | 
           docker images
+          sudo bash -c 'echo "{\"max-concurrent-uploads\": 1, \"max-concurrent-downloads\": 1}" > /etc/docker/daemon.json && systemctl restart docker && while ! systemctl is-active --quiet docker; do sleep 1; done'
           docker push --max-concurrent-uploads 1 ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ env.VERSION }}
           docker push --max-concurrent-uploads 1 ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
       - 
