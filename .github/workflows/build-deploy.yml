@@ -107,7 +107,7 @@ jobs:
           platforms: ${{ steps.dotenv.outputs.platform }}
           build-args: VERSION=${{ env.VERSION }}
           context: .
-          push: true
+          push: false
           no-cache: true
           tags: | 
             ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ env.VERSION }}
@@ -119,6 +119,12 @@ jobs:
       #    if [[ ! -z "$DIGEST" ]]; then
       #      curl -X DELETE --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$DIGEST
       #    fi
+      - 
+        name: push docker image
+        id: push-docker-image
+        run: | 
+          docker push ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ env.VERSION }}
+          docker push ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
       - 
         name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.19.0
