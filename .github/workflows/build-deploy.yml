@@ -123,8 +123,9 @@ jobs:
         name: push docker image
         id: push-docker-image
         run: | 
-          docker push ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ env.VERSION }}
-          docker push ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
+          docker images
+          docker push ${{ env.VERSION }}
+          docker push latest
       - 
         name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.19.0
