@@ -114,12 +114,10 @@ jobs:
             ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:${{ env.VERSION }}
             ${{ steps.dotenv.outputs.registry }}/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}:latest
           provenance: false
-      #- 
-      #  name: Delete previous image
-      #  run: |
-      #    if [[ ! -z "$DIGEST" ]]; then
-      #      curl -X DELETE --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/manifests/$DIGEST
-      #    fi
+      # Sometimes get DENIED error in Trivy step, see https://aquasecurity.github.io/trivy/v0.41/docs/references/troubleshooting/#denied
+      - 
+        name: Log out from ghcr.io
+        run: docker logout ghcr.io
       - 
         name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.19.0
