@@ -126,6 +126,7 @@ jobs:
         env:
           TRIVY_USERNAME: ${{ secrets.username }}
           TRIVY_PASSWORD: ${{ secrets.password }}
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
       - 
         name: Publish Trivy Output to Summary
         run: |
