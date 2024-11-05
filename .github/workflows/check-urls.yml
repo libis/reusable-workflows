@@ -24,12 +24,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Get product name from hostname  # example: lirias.t.libis.be  ->  lirias.
-        id: productname
-        run: |
-          STRING="${{ matrix.hostname }}"
-          SUBSTRING="${STRING%%.*}"
-          echo "substring=$SUBSTRING" >> $GITHUB_ENV
       - name: Echo Product Name
         #run: echo "The product name is ${{ steps.productname.outputs.substring }}"
         run: echo "The product name is $substring"
@@ -37,4 +31,4 @@ jobs:
         uses: libis/urlchecker-extended@v0.1.2
         with:
           hostname: ${{ matrix.hostname }}
-          filename: ./.github/workflows/traefik-routing-test-files/${{ env.substring }}.json # Had to hardcode part of this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
+          filename: ./.github/workflows/traefik-routing-test-files/${{ matrix.hostname }}.json # Had to hardcode part of this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
