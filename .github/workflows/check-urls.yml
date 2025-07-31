@@ -30,5 +30,6 @@ jobs:
       - name: Check URLs
         uses: libis/urlchecker-extended@v0.1.2
         with:
+          timeout: 10
           hostname: ${{ matrix.hostname }}
           filename: ./.github/workflows/traefik-routing-test-files/${{ matrix.hostname }}.json # Had to hardcode part of this for now as github.action_path is empty due to this issue https://github.com/actions/runner/issues/2473
