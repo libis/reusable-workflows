@@ -65,22 +65,28 @@ jobs:
           VERSION="$(date +%Y%m%d).1" # example: 20230817.1
 
           if [ -n "$TAGS" ]; then
-            # Convert TAGS to an array and loop through
-            IFS=' ' read -r -a tags_array <<< "$TAGS"
-            while :; do
-              # Check if any tag starts with VERSION
-              if printf '%s\n' "${tags_array[@]}" | grep -q -e "^$VERSION"; then
-                echo "A version starting with $VERSION found. Incrementing Minor and checking again..."
-                prefix=${VERSION%.*}
-                num=${VERSION#*.}
-                new_num=$((num + 1))  # Increment the minor part
-                # Reassemble the version
-                VERSION="${prefix}.${new_num}"
-              else
-                echo "No version starting with $VERSION found. Stopping."
-                break # Exit the loop if no matching version is found
+            
+            # Convert TAGS to an array and loop through looking for existing version, if so then we just increase the last digit by 1
+            read -r -a tags_array <<< "$TAGS"
+            found=false
+            for t in "${tags_array[@]}"; do
+              if [[ $t == "$VERSION"* ]]; then
+                found=true
+                break
               fi
             done
+            
+            # Check if any tag starts with VERSION
+            if $found; then
+              echo "A version starting with $VERSION found. Incrementing Minor and checking again..."
+              prefix=${VERSION%.*}
+              num=${VERSION#*.}
+              new_num=$((num + 1))  # Increment the minor part
+              # Reassemble the version
+              VERSION="${prefix}.${new_num}"
+            else
+              echo "No version starting with $VERSION found. Stopping."
+            fi
           fi
 
           # Append branch name to the version if ADD_BRANCH_NAME_TO_VERSION is true, found in .env file. 
