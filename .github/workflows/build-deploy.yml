@@ -63,30 +63,19 @@ jobs:
 
           if [ -n "$TAGS" ]; then
             # Convert TAGS to an array and loop through looking for existing date, if so then we just increase the last digit by 1
-            read -r -a tags_array <<< "$TAGS"
+            IFS=$'\n' read -r -a tags_array <<< "$TAGS"
             echo "Total tags: ${#tags_array[@]}"
             date="$(date +%Y%m%d)" # example: 20230817
-            found=false
+            count=0
             for t in "${tags_array[@]}"; do
-              echo "Checking if $date is in $t"
-              if [[ $t == "$date"* ]]; then
-                found=true
-                break
+              echo "Checking if $t starts with $date"
+              if [[ $t == "$date".* ]]; then
+                count=$((count+1))
               fi
             done
             
-            # Check if any tag starts with VERSION
-            if $found; then
-              echo "A version starting with $VERSION found. Incrementing Minor and checking again..."
-              prefix=${VERSION%.*}
-              num=${VERSION#*.}
-              new_num=$((num + 1))  # Increment the minor part
-              # Reassemble the version
-              VERSION="${prefix}.${new_num}"
-            else
-              echo "No version starting with $date found. Stopping."
-              VERSION="$(date +%Y%m%d).1" # e.g. 20230924.1
-            fi
+            VERSION="${date}.$((count+1))"
+            
           else
             # No tags where found, possibly first build
             VERSION="$(date +%Y%m%d).1" # e.g. 20230924.1
