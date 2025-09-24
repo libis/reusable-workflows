@@ -59,11 +59,12 @@ jobs:
         name: Fetch Docker tags and set new version
         run: |
           # Using the API, get all tags from the repo then remove the 'lates' tag. 
-          TAGS=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[]? // empty')
-
-          if [ -n "$TAGS" ]; then
+          mapfile -t tags_array <<(curl -s --user "${{ secrets.username }}:${{ secrets.password }}" \
+          "https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list" |
+          jq -r '.tags[]? // empty')
+  
+          if [ -n "$tags_array" ]; then
             # Convert TAGS to an array and loop through looking for existing date, if so then we just increase the last digit by 1
-            IFS=$'\n' read -r -a tags_array <<< "$TAGS"
             echo "Total tags: ${#tags_array[@]}"
             date="$(date +%Y%m%d)" # example: 20230817
             count=0
