@@ -62,15 +62,13 @@ jobs:
           TAGS=$(curl -s --user ${{ secrets.username }}:${{ secrets.password }} https://${{ steps.dotenv.outputs.registry }}/v2/${{ steps.dotenv.outputs.namespace }}/${{ steps.dotenv.outputs.service }}/tags/list | jq -r '.tags[]? // empty')
           echo "Curl tags: $TAGS"
 
-          VERSION="$(date +%Y%m%d).1" # example: 20230817.1
-
           if [ -n "$TAGS" ]; then
-            
-            # Convert TAGS to an array and loop through looking for existing version, if so then we just increase the last digit by 1
+            # Convert TAGS to an array and loop through looking for existing date, if so then we just increase the last digit by 1
             read -r -a tags_array <<< "$TAGS"
+            date="$(date +%Y%m%d)" # example: 20230817
             found=false
             for t in "${tags_array[@]}"; do
-              if [[ $t == "$VERSION"* ]]; then
+              if [[ $t == "$date"* ]]; then
                 found=true
                 break
               fi
