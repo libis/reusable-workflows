@@ -12,7 +12,7 @@ on:
         type: string
         
 env:
-  SLACK_WEBHOOK: ${{ secrets.MSTEAMS_WEBHOOK }}  # inherited from the caller
+  SLACK_WEBHOOK: ${{ secrets.MSTEAMS_WEBHOOK_INFRASTRUCTURE }}  # inherited from the caller
 
 jobs:
   check-urls:
